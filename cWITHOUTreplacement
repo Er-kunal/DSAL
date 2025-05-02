@@ -1,0 +1,160 @@
+#include<iostream>
+#include<string.h>
+#define MAX 10
+using namespace std;
+
+struct node{
+    char name[10];
+    long int mobno;
+    int chain;
+
+    node()
+    {
+        strcpy(name,"-");
+        mobno=0;
+        chain=-1;
+    }
+};
+
+class hasht{
+    node ht[MAX];
+    public:
+    int hashfun(long int);
+    void insert();
+    void display();
+    void search();
+    void del();
+};
+
+int hasht::hashfun(long int num)
+{
+    return(num%MAX);
+}
+
+void hasht::insert()
+{
+    int ind,prev;
+    node s;
+    cout<<"enter name and mobile number"<<endl;
+    cin>>s.name>>s.mobno;
+
+    ind=hashfun(s.mobno);
+
+    if(ht[ind].mobno==0)
+    {
+        ht[ind]=s;
+    }
+    else{
+        prev=ind;
+        while(ht[ind].mobno!=0)
+        {
+            ind=(ind+1)%MAX;
+        }
+        ht[ind]=s;
+        ht[prev].chain=ind;
+    }
+}
+
+void hasht::display()
+{
+    cout<<"index\tname\t\tmobile number\tchain"<<endl;
+    for(int i=0; i<MAX; i++)
+    {
+        cout<<i<<"\t"<<ht[i].name<<"\t\t"<<ht[i].mobno<<"\t\t"<<ht[i].chain<<endl;
+    }
+}
+
+void hasht::search()
+{
+    long int num;
+    int ind;
+    cout<<"enter mobile no. you want to search:"<<endl;
+    cin>>num;
+
+    ind=hashfun(num);
+    while(ind!=-1)
+    {
+        if(num==ht[ind].mobno)
+        {
+            cout<<"num is present"<<num<<endl;
+            return;
+        }
+        ind=ht[ind].chain;
+    }
+}
+
+void hasht::del()
+{
+    long int num;
+    int ind,prev;
+    cout<<"enter num which you want to delete";
+    cin>>num;
+
+    ind=hashfun(num);
+
+    while(ind!=-1)
+    {
+        if(num==ht[ind].mobno)
+        {
+            if(ht[ind].chain==-1)
+            {
+                strcpy(ht[ind].name,"-");
+                ht[ind].mobno=0;
+                cout<<"record is deleted:";
+            }
+            else{
+                int next=ht[ind].chain;
+                ht[ind]=ht[next];
+                strcpy(ht[next].name,"-");
+                ht[next].mobno=0;
+                ht[next].chain=-1;
+            }
+            {
+                if(prev != -1)
+                   ht[prev].chain= -1;
+            }
+
+        }
+        prev=ind;
+        ind=ht[ind].chain;
+
+
+    }
+}
+
+
+
+int main()
+{
+    int ch;
+    hasht h;
+
+    do{
+        cout<<"menu\n1.insert\n2.display\n3.search\n4.delete\nEnter your choice";
+        cin>>ch;
+
+        switch(ch)
+        {
+            case 1:
+            h.insert();
+            break;
+
+            case 2:
+            h.display();
+            break;
+
+            case 3:
+            h.search();
+            break;
+
+            case 4:
+            h.del();
+            break;
+
+            default:
+            cout<<"invalide choice:";
+            break;
+        }
+    }while(ch!=0);
+    return 0;
+}
