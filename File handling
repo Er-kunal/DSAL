@@ -1,0 +1,170 @@
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+class student{
+    public:
+    int roll;
+    char div;
+    char name[10];
+
+    void take()
+    {
+        cout<<"enter name";
+        cin>>name;
+        cout<<"enter roll no.";
+        cin>>roll;
+        cout<<"enter division";
+        cin>>div;
+    }
+
+    void put()
+    {
+        cout<<"\nname"<<name;
+        cout<<"\nroll"<<roll;
+        cout<<"\ndiv"<<div;
+    }
+};
+
+void createandwrite()
+{
+    int n;
+    cout<<"enter how many students:";
+    cin>>n;
+
+    ofstream fout("student.txt",ios::binary);
+    student s;
+    for(int i=0; i<n; i++)
+    {
+        s.take();
+        fout.write((char*)&s , sizeof(s));
+    }
+    fout.close();
+}
+
+void read()
+{
+    ifstream fin("student.txt",ios::binary);
+    student s;
+    while(fin.read((char*)&s , sizeof(s)))
+    {
+        s.put();
+    }
+    fin.close();
+}
+
+void search()
+{
+    int r,found=0;
+    cout<<"enter roll no. to be searched:";
+    cin>>r;
+
+    ifstream fin("student.txt",ios::binary);
+    student s;
+
+    while(fin.read((char*)&s ,sizeof(s)))
+    {
+        if(s.roll==r)
+        {
+            cout<<"record is found";
+            s.put();
+            found=1;
+            break;
+        }
+    }
+    if(!found)
+    {
+        cout<<"record is not found";
+
+    }
+    fin.close();
+}
+
+void append()
+{
+    int n;
+    cout<<"enter no.of students to be append:";
+    cin>>n;
+
+    ofstream fout("student.txt",ios::app | ios::binary);
+    student s;
+    for(int i=0; i<n; i++)
+    {
+        s.take();
+        fout.write((char*)&s , sizeof(s));
+    }
+    fout.close();
+}
+
+void del()
+{
+    int r,found=0;
+    cout<<"Enter roll no.to be deleted:";
+    cin>>r;
+
+    ifstream fin("student.txt" , ios::binary);
+    ofstream fout("temp.txt",ios::binary);
+    student s;
+
+    while(fin.read((char*)&s ,sizeof(s)))
+    {
+        if(s.roll==r)
+        {
+            cout<<"Record is found and deleted:";
+            s.put();
+            found=1;
+        }
+        else{
+            fout.write((char*)&s ,sizeof(s));
+        }
+    }
+    fin.close();
+    fout.close();
+    remove("student.txt");
+    rename("temp.txt","student.txt");
+    if(!found)
+    {
+        cout<<"record is not found";
+    }
+}
+
+int main()
+{
+    student s;
+    int ch;
+
+    do{
+        cout<<"\n....MENU.....\n"
+            <<"1.create and write\n"
+            <<"2.read all\n"
+            <<"3.Search\n"
+            <<"4.Append\n"
+            <<"5.Delete\n"
+            <<"0.Exit\n"
+            <<"enter your choice:";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1:
+            createandwrite();
+            break;
+
+            case 2:
+            read();
+            break;
+
+            case 3:
+            search();
+            break;
+
+            case 4:
+            append();
+            break;
+
+            case 5:
+            del();
+            break;
+        }
+    }while(ch!=0);
+    return 0;
+}
