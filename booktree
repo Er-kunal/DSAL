@@ -1,0 +1,128 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct node {
+    string label;
+    int chcount;
+    node* child[50];
+};
+
+class general {
+    node* root;
+public:
+    general() {
+        root = NULL;
+    }
+
+    void insert();
+    void display();
+};
+
+void general::insert() {
+    root = new node();
+    cout << "Enter the name of the book: ";
+    cin.ignore();  // To allow input with spaces
+    getline(cin, root->label);
+
+    cout << "Enter the number of chapters in the book: ";
+    cin >> root->chcount;
+    if (root->chcount > 50) {
+        cout << "Too many chapters! Max is 50." << endl;
+        return;
+    }
+
+    for (int i = 0; i < root->chcount; i++) {
+        root->child[i] = new node();
+        cout << "Enter the name of chapter " << i + 1 << ": ";
+        cin.ignore();
+        getline(cin, root->child[i]->label);
+
+        cout << "Enter the number of sections in chapter " << i + 1 << ": ";
+        cin >> root->child[i]->chcount;
+        if (root->child[i]->chcount > 50) {
+            cout << "Too many sections! Max is 50." << endl;
+            return;
+        }
+
+        for (int j = 0; j < root->child[i]->chcount; j++) {
+            root->child[i]->child[j] = new node();
+            cout << "Enter the name of section " << j + 1 << ": ";
+            cin.ignore();
+            getline(cin, root->child[i]->child[j]->label);
+
+            cout << "Enter the number of sub-sections in section " << j + 1 << ": ";
+            cin >> root->child[i]->child[j]->chcount;
+            if (root->child[i]->child[j]->chcount > 50) {
+                cout << "Too many sub-sections! Max is 50." << endl;
+                return;
+            }
+
+            for (int k = 0; k < root->child[i]->child[j]->chcount; k++) {
+                root->child[i]->child[j]->child[k] = new node();
+                cout << "Enter the name of sub-section " << k + 1 << ": ";
+                cin.ignore();
+                getline(cin, root->child[i]->child[j]->child[k]->label);
+            }
+        }
+    }
+}
+
+void general::display() {
+    if (root != NULL) {
+        cout << "\n**** Hierarchy of Book ****" << endl;
+        cout << "Book Name: " << root->label << endl;
+
+        for (int i = 0; i < root->chcount; i++) {
+            node* chapter = root->child[i];
+            if (!chapter) continue;
+
+            cout << "  - Chapter: " << chapter->label << endl;
+
+            for (int j = 0; j < chapter->chcount; j++) {
+                node* section = chapter->child[j];
+                if (!section) continue;
+
+                cout << "    - Section: " << section->label << endl;
+
+                for (int k = 0; k < section->chcount; k++) {
+                    node* subsection = section->child[k];
+                    if (!subsection) continue;
+
+                    cout << "      - Sub-section: " << subsection->label << endl;
+                }
+            }
+        }
+    } else {
+        cout << "No book data available. Please insert first.\n";
+    }
+}
+
+int main() {
+    general g;
+    int ch;
+    do {
+        cout << "\n~~ MENU ~~" << endl;
+        cout << "1. Insert" << endl;
+        cout << "2. Display" << endl;
+        cout << "0. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1:
+            g.insert();
+            break;
+        case 2:
+            g.display();
+            break;
+        case 0:
+            cout << "Exiting program..." << endl;
+            break;
+        default:
+            cout << "Invalid choice. Try again." << endl;
+        }
+    } while (ch != 0);
+
+    return 0;
+}
