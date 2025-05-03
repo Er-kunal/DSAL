@@ -1,0 +1,145 @@
+#include<iostream>
+using namespace std;
+
+struct node{
+    int data;
+    node*left;
+    node*right;
+
+};
+
+class bst{
+    public:
+    node*root;
+
+    void create();
+    void insert(node*,node*);
+    bool search(node*);
+    void mirror(node*);
+
+    bst()
+    {
+        root=NULL;
+    }
+};
+
+void bst::create()
+{
+    node*nn=new node();
+    cout<<"enter node data";
+    cin>>nn->data;
+
+    nn->left=NULL;
+    nn->right=NULL;
+    if(root==NULL)
+    {
+        root=nn;
+    }
+    else{
+        insert(root,nn);
+    }
+}
+
+void bst::insert(node*root,node*nn)
+{
+    if(nn->data<root->data)
+    {
+        if(root->left==NULL)
+        {
+            root->left=nn;
+        }
+        else{
+            insert(root->left,nn);
+        }
+    }
+    else{
+        if(root->right==NULL)
+        {
+            root->right=nn;
+        }
+        else{
+            insert(root->right,nn);
+        }
+    }
+}
+
+bool bst::search(node*root)
+{
+    int n;
+    cout<<"Enter node to be search"<<endl;
+    cin>>n;
+
+    node*temp=root;
+    while(temp!=NULL)
+    {
+        if(n==temp->data)
+        {
+            return true;
+        }
+        else if(n<temp->data)
+        {
+            temp=temp->left;
+        }
+        else{
+            temp=temp->right;
+        }
+    }
+    return false;
+}
+
+void bst::mirror(node*root)
+{
+    if(root==NULL)
+    {
+        return;
+    }
+    else{
+        mirror(root->left);
+        mirror(root->right);
+        node*temp=root->left;
+        root->left=root->right;
+        root->right=temp;
+    }
+}
+
+int main()
+{
+    int ch;
+    bst b;
+
+    do{
+        cout<<"\n......MENU......\n";
+        cout<<"1.insert\n";
+        cout<<"2.Search\n";
+        cout<<"3.Mirroring\n";
+        cout<<"4.exit\n";
+        cout<<"ENter your choice:"<<endl;
+        cin>>ch;
+
+        switch(ch)
+        {
+            case 1:
+            b.create();
+            break;
+
+            case 2:
+            if(b.search(b.root))
+            {
+                cout<<"Node found";
+            }
+            else{
+                cout<<"Not found";
+            }
+            break;
+
+            case 3:
+            b.mirror(b.root);
+            cout<<"TREE mirrored Successfully";
+            break;
+
+            case 4:
+            exit(0);
+        }
+    }while(ch!=0);
+    return 0;
+}
