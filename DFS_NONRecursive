@@ -1,0 +1,51 @@
+#include <iostream> 
+using namespace std; 
+int main() { 
+int graph[10][10]; // Adjacency matrix 
+int visited[10] = {0}; // Track visited vertices 
+int stack[10]; // Stack for DFS 
+int n, edges, start; 
+int top = -1; 
+cout << "Enter number of vertices: "; 
+cin >> n; 
+
+for (int i = 0; i < n; i++) 
+for (int j = 0; j < n; j++) 
+graph[i][j] = 0; 
+cout << "Enter number of edges: "; 
+cin >> edges; 
+cout << "Enter edges (start end):\n"; 
+for (int i = 0; i < edges; i++) { 
+int u, v; 
+cin >> u >> v; 
+graph[u][v] = 1; 
+// graph[v][u] = 1; 
+} 
+cout << "Enter starting vertex: "; 
+cin >> start; 
+cout << "DFS Traversal: "; 
+
+stack[++top] = start; 
+visited[start] = 1; 
+cout << start << " "; 
+while (top >= 0) { 
+        int current = stack[top]; 
+        bool found = false; 
+ 
+        for (int i = 0; i < n; i++) { 
+            if (graph[current][i] == 1 && visited[i] == 0) { 
+                stack[++top] = i; // Push to stack 
+                visited[i] = 1; 
+                cout << i << " "; 
+                found = true; 
+                break; 
+            } 
+        } 
+ 
+        if (!found) { 
+            top--; // Backtrack 
+        } 
+    } 
+ 
+    return 0; 
+}
