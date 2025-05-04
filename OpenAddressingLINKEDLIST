@@ -1,0 +1,118 @@
+#include<iostream>
+using namespace std;
+
+#define MAX 10
+
+// Node structure for linked list
+struct Node {
+    long int data;
+    Node* next;
+    
+    Node(long int val) {
+        data = val;
+        next = nullptr;
+    }
+};
+
+class Hash {
+    Node* table[MAX];
+
+public:
+    Hash() {
+        for (int i = 0; i < MAX; i++) {
+            table[i] = nullptr;
+        }
+    }
+
+    int hashfun(long int num) {
+        return num % MAX;
+    }
+
+    void insert() {
+        long int num;
+        cout << "Enter the number: ";
+        cin >> num;
+
+        int index = hashfun(num);
+        Node* newNode = new Node(num);
+        
+        if (!table[index]) {
+            table[index] = newNode;
+            cout << "Number " << num << " inserted with 1 comparison." << endl;
+        } else {
+            Node* temp = table[index];
+            int comp = 1;
+            while (temp->next) {
+                temp = temp->next;
+                comp++;
+            }
+            temp->next = newNode;
+            comp++;
+            cout << "Number " << num << " inserted with " << comp << " comparisons." << endl;
+        }
+    }
+
+    void display() {
+        for (int i = 0; i < MAX; i++) {
+            cout << i << " ---> ";
+            Node* temp = table[i];
+            if (!temp) {
+                cout << "NULL";
+            }
+            while (temp) {
+                cout << temp->data;
+                if (temp->next) cout << " -> ";
+                temp = temp->next;
+            }
+            cout << endl;
+        }
+    }
+
+    void displaycomparisons() {
+        int totalcomparisons = 0;
+        cout << "Comparisons for each key:" << endl;
+
+        for (int i = 0; i < MAX; i++) {
+            Node* temp = table[i];
+            int pos = 1;
+            while (temp) {
+                cout << "Key " << temp->data << " required " << pos << " comparisons." << endl;
+                totalcomparisons += pos;
+                temp = temp->next;
+                pos++;
+            }
+        }
+
+        cout << "Total comparisons: " << totalcomparisons << endl;
+    }
+};
+
+int main() {
+    int ch;
+    Hash h;
+
+    do {
+        cout << "\nMENU:\n1. Insert\n2. Display\n3. Display Comparisons\n4. Exit\nEnter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                h.insert();
+                break;
+            case 2:
+                h.display();
+                break;
+            case 3:
+                h.displaycomparisons();
+                break;
+            case 4:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid choice! Try again." << endl;
+        }
+
+    } while (ch != 4);
+
+    return 0;
+}
